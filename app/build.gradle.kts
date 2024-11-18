@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ingonyama.hellorustandroid"
+    namespace = "com.ingonyama.groth16"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ingonyama.hellorustandroid"
+        applicationId = "com.ingonyama.groth16"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

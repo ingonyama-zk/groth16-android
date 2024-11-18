@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "HelloRustAndroid"
+rootProject.name = "Groth16"
 include(":app")

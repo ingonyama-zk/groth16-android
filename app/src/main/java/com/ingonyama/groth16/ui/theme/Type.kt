@@ -1,4 +1,4 @@
-package com.ingonyama.hellorustandroid.ui.theme
+package com.ingonyama.groth16.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

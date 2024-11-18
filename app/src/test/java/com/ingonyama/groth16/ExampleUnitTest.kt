@@ -1,4 +1,4 @@
-package com.ingonyama.hellorustandroid
+package com.ingonyama.groth16
 
 import org.junit.Test
 
