@@ -17,11 +17,11 @@
 
    The file names are fixed. You can upload them to your phone using the **Device Explorer** in Android Studio.
 
-   In our example we used [**Aptos keeless circuit**](https://github.com/aptos-labs/aptos-core/tree/main/keyless/pepper). The instructions to derive **witness** and **zkey**  files are therein.
+   In our example we used [**Aptos keyless circuit**](https://github.com/aptos-labs/aptos-core/tree/main/keyless/pepper). The instructions to derive **witness** and **zkey**  files are therein.
 
 ## Benchmarks
 
-For [**Aptos keyless circuit**](https://github.com/aptos-labs/aptos-core/tree/main/keyless/pepper), on a midrange smartphone (e.g., Samsung A54), the initial proof generation takes approximately **60 seconds**. Subsequent proofs are significantly faster, taking around **30 seconds** due to caching.
+For **Aptos keyless circuit**, on a **midrange** smartphone (e.g., Samsung A54), the initial proof generation takes approximately **60 seconds**. Subsequent proofs are significantly faster, taking around **30 seconds** due to caching.
 
 ## Implementation Details
 ![Development](./Android-Icicle.png)
