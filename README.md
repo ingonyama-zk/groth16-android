@@ -17,7 +17,7 @@
 
    The file names are fixed. You can upload them to your phone using the **Device Explorer** in Android Studio.
 
-   In our example we used [**Aptos keeless circuit**] https://github.com/aptos-labs/aptos-core/tree/main/keyless/pepper. The instructions to derive **witness** and **zkey**  file are therein.
+   In our example we used [**Aptos keeless circuit**](https://github.com/aptos-labs/aptos-core/tree/main/keyless/pepper). The instructions to derive **witness** and **zkey**  files are therein.
 
 ## Benchmarks
 
