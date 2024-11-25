@@ -10,6 +10,7 @@
 
 4. The PoC expects the **witness** and **zkey** files to be in the app-specific internal storage:
 
+
    ```txt
    /data/data/com.ingonyama.groth16/prover_key.zkey
    /data/data/com.ingonyama.groth16/witness.wtns
@@ -17,7 +18,7 @@
 
    The file names are fixed. You can upload them to your phone using the **Device Explorer** in Android Studio.
 
-   In our example we used [**Aptos keyless circuit**](https://github.com/aptos-labs/aptos-core/tree/main/keyless/pepper). The instructions to derive **witness** and **zkey**  files are therein.
+   In our example we used [**Aptos keyless circuit**](https://github.com/aptos-labs/keyless-zk-proofs/tree/main/circuit). The instructions to derive **witness** and **zkey**  files are therein.
 
 ## Benchmarks
 
