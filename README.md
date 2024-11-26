@@ -8,20 +8,17 @@
 
 3. Enable **developer mode** on your Android device and run the PoC through **Android Studio**.
 
-4. The PoC expects the **witness** and **zkey** files to be in the app-specific internal storage:
+4. Upload the **witness** and **zkey** files to your phone, for example **Downloads** directory. You can do this using the **Device Explorer** in Android Studio. Example files are located in `./examples` directory
 
-TODO: use of cache requires to restart the app when changing circuits!
+5. Start our PoC. Use buttons **Select Witness File** and **Select ZKey File** to select corresponding files. Press **Start Computation** to run the Groth16 proof. Upon comletion the result prints to **Output** textbox, including benchmarking data. 
 
-   ```txt
-   /data/data/com.ingonyama.groth16/prover_key.zkey
-   /data/data/com.ingonyama.groth16/witness.wtns
-   ```
-
-   The file names are fixed. You can upload them to your phone using the **Device Explorer** in Android Studio.
-
-   In our example we used [**Aptos keyless circuit**](https://github.com/aptos-labs/keyless-zk-proofs/tree/main/circuit). The instructions to derive **witness** and **zkey**  files are therein.
+**Issue:** use of cache in our Groth16 requires to restart the app when changing circuits!
 
 ## Benchmarks
+
+In our PoC we used [**Aptos keyless circuit**](https://github.com/aptos-labs/keyless-zk-proofs/tree/main/circuit) for benchmarks. The instructions to derive **witness** and **zkey**  files are therein.
+
+We will soon add more benchmarks.
 
 For **Aptos keyless circuit**, on a **midrange** smartphone (e.g., Samsung A54), the initial proof generation takes approximately **60 seconds**. Subsequent proofs are significantly faster, taking around **30 seconds** due to caching.
 
