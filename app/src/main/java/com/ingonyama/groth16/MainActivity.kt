@@ -1,4 +1,6 @@
 package com.ingonyama.groth16
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -29,8 +31,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.ingonyama.groth16.ui.theme.HelloRustAndroidTheme
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -42,8 +48,9 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    private var selectedFilePath by mutableStateOf("/data/data/com.ingonyama.groth16/witness.wts")
-    private var selectedFilePath2 by mutableStateOf("/data/data/com.ingonyama.groth16/prover_key.zkey")
+    private val REQUEST_CODE_READ_EXTERNAL_STORAGE = 1
+    private var selectedFilePath by mutableStateOf("/storage/emulated/0/Download/witness.wtns")
+    private var selectedFilePath2 by mutableStateOf("/storage/emulated/0/Download/prover_key.zkey")
     private lateinit var filePickerLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var filePickerLauncher2: ActivityResultLauncher<Array<String>>
 
@@ -51,20 +58,29 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         initLogger()
         enableEdgeToEdge()
+        Log.d("PoC", "Entered onCreate")
 
         filePickerLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
             uri?.let {
-                val path = uri.path?.replace("document/raw:", "") ?: "/data/data/com.ingonyama.groth16/witness.wts"
-                selectedFilePath = path
-                Log.d("MainActivity", "Witness file: $selectedFilePath")
+                val path = copyUriToInternalStorage(it, "witness.wtns")
+                if (path != null) {
+                    selectedFilePath = path
+                    Log.d("MainActivity", "Witness file copied to: $selectedFilePath")
+                } else {
+                    Log.d("MainActivity", "Failed to copy Witness file")
+                }
             }
         }
 
         filePickerLauncher2 = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
             uri?.let {
-                val path = uri.path?.replace("document/raw:", "") ?: "/data/data/com.ingonyama.groth16/prover_key.zkey"
-                selectedFilePath2 = path
-                Log.d("MainActivity", "ZKey file: $selectedFilePath2")
+                val path = copyUriToInternalStorage(it, "prover_key.zkey")
+                if (path != null) {
+                    selectedFilePath2 = path
+                    Log.d("MainActivity", "ZKey file copied to: $selectedFilePath2")
+                } else {
+                    Log.d("MainActivity", "Failed to copy ZKey file")
+                }
             }
         }
 
@@ -80,6 +96,21 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun copyUriToInternalStorage(uri: Uri, fileName: String): String? {
+        val destinationFile = File(filesDir, fileName)
+        return try {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                FileOutputStream(destinationFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+            destinationFile.absolutePath
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
         }
     }
 
@@ -120,12 +151,16 @@ class MainActivity : ComponentActivity() {
         val selectedFile2 = selectedFilePath2
 
         Button(onClick = {
-            output = Groth16(selectedFile1, selectedFile2)
+            if (canReadFile(selectedFile1) && canReadFile(selectedFile2)) {
+                output = Groth16(selectedFile1, selectedFile2)
+                Log.d("MainActivity", "Computation result: $output")
+            } else {
+                Log.d("MainActivity", "Cannot read one or both of the selected files $selectedFile1 $selectedFile2")
+            }
             Log.d("MainActivity", "Computation result: $output")
         }, modifier = Modifier.padding(8.dp)) {
             Text(text = "Start Computation")
         }
-
         ComputationOutput(output = output)
     }
 
@@ -180,3 +215,7 @@ fun GreetingPreview() {
     }
 }
 
+fun canReadFile(filePath: String): Boolean {
+    val file = File(filePath)
+    return file.exists() && file.canRead()
+}
