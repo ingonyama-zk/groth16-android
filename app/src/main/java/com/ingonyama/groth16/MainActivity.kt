@@ -1,8 +1,10 @@
 package com.ingonyama.groth16
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -48,9 +50,11 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    private val REQUEST_CODE_READ_EXTERNAL_STORAGE = 1
-    private var selectedFilePath by mutableStateOf("/storage/emulated/0/Download/witness.wtns")
-    private var selectedFilePath2 by mutableStateOf("/storage/emulated/0/Download/prover_key.zkey")
+    
+    private var selectedFilePath by mutableStateOf("*.wtns")
+    private var selectedFilePath2 by mutableStateOf("*.zkey")
+    private var zkeyFileName by mutableStateOf("")
+    private var witnessFileName by mutableStateOf("")
     private lateinit var filePickerLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var filePickerLauncher2: ActivityResultLauncher<Array<String>>
 
@@ -62,6 +66,11 @@ class MainActivity : ComponentActivity() {
 
         filePickerLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
             uri?.let {
+                val fileName  = getFileNameFromUri(this, it)
+                if (fileName != null) {
+                    witnessFileName = fileName
+                }
+                Log.d("groth16", "Witness file: $witnessFileName")
                 val path = copyUriToInternalStorage(it, "witness.wtns")
                 if (path != null) {
                     selectedFilePath = path
@@ -74,6 +83,11 @@ class MainActivity : ComponentActivity() {
 
         filePickerLauncher2 = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
             uri?.let {
+                val fileName  = getFileNameFromUri(this, it)
+                if (fileName != null) {
+                    zkeyFileName = fileName
+                }
+                Log.d("groth16", "ZKey file: $zkeyFileName")
                 val path = copyUriToInternalStorage(it, "prover_key.zkey")
                 if (path != null) {
                     selectedFilePath2 = path
@@ -131,7 +145,7 @@ class MainActivity : ComponentActivity() {
         Button(onClick = {
             filePickerLauncher.launch(arrayOf("*/*"))
         }, modifier = Modifier.padding(8.dp)) {
-            Text(text = "Select Witness File: $selectedFilePath")
+            Text(text = "Select Witness File: $witnessFileName")
         }
     }
 
@@ -140,7 +154,7 @@ class MainActivity : ComponentActivity() {
         Button(onClick = {
             filePickerLauncher2.launch(arrayOf("*/*"))
         }, modifier = Modifier.padding(8.dp)) {
-            Text(text = "Select ZKey File: $selectedFilePath2")
+            Text(text = "Select ZKey File: $zkeyFileName")
         }
     }
 
@@ -218,4 +232,16 @@ fun GreetingPreview() {
 fun canReadFile(filePath: String): Boolean {
     val file = File(filePath)
     return file.exists() && file.canRead()
+}
+
+private fun getFileNameFromUri(context: Context, uri: Uri): String? {
+    var name: String? = null
+    val returnCursor = context.contentResolver.query(uri, null, null, null, null)
+    returnCursor?.use {
+        val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        if (it.moveToFirst()) {
+            name = it.getString(nameIndex)
+        }
+    }
+    return name
 }

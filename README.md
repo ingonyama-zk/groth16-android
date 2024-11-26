@@ -10,6 +10,7 @@
 
 4. The PoC expects the **witness** and **zkey** files to be in the app-specific internal storage:
 
+TODO: use of cache requires to restart the app when changing circuits!
 
    ```txt
    /data/data/com.ingonyama.groth16/prover_key.zkey
